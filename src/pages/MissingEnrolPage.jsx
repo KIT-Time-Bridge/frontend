@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from "../components/Navbar";
 import styles from './MissingEnrolPage.module.css';
@@ -9,6 +10,7 @@ export default function MissingEnrolPage() {
     const [imageFile, setImageFile] = useState(null);
     const [missingSituation, setMissingSituation] = useState("");
     const [missingExtraEvidence, setMissingExtraEvidence] = useState("");
+    const navigate = useNavigate();
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];

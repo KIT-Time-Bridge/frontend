@@ -18,18 +18,26 @@ export default function LoginPage() {
         user_pw: password,
       });
 
-      // API 응답에 따라 로그인 처리
-      if (response.data.success) { // 예시: API 응답에 success 필드가 있다고 가정
-        console.log('로그인 성공:', response.data);
-        alert('로그인에 성공했습니다.');
-        navigate('/'); // 로그인 성공 후 홈페이지로 이동
-      } else {
-        console.log('로그인 실패:', response.data);
-        alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');
-      }
+      // 1. (변경)
+      // try 블록에 왔다는 것 자체가 2xx 응답(성공)을 의미합니다.
+      // 따라서 별도 if문 없이 바로 성공 처리를 합니다.
+      console.log('로그인 성공:', response.data);
+      alert('로그인에 성공했습니다.');
+      navigate('/'); // 로그인 성공 후 홈페이지로 이동
+
     } catch (error) {
       console.error('로그인 중 오류 발생:', error);
-      alert('로그인 중 오류가 발생했습니다. 서버 상태를 확인해 주세요.');
+
+      // 2. (개선)
+      // catch 블록에서 에러 유형을 구분해주는 것이 좋습니다.
+      if (error.response) {
+        // 서버가 응답을 했으나, 4xx (권한 없음, 잘못된 요청) 또는 5xx (서버 오류)인 경우
+        console.log('로그인 실패 (서버 응답):', error.response.data);
+        alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.');
+      } else {
+        // 요청 자체가 실패한 경우 (e.g., 네트워크 오류, 서버 다운)
+        alert('로그인 중 오류가 발생했습니다. 서버 상태를 확인해 주세요.');
+      }
     }
   };
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from "../components/Navbar";
 import styles from './FamilyEnrolPage.module.css';
@@ -11,7 +12,7 @@ export default function MissingEnrolPage() {
   const [resultImageSrc, setResultImageSrc] = useState("");
   const [missingSituation, setMissingSituation] = useState("");
   const [missingExtraEvidence, setMissingExtraEvidence] = useState("");
-  const sessionId = "a2592bf9-7793-4753-acfd-2125576d986a";
+  const navigate = useNavigate();
 
   const handleImageChange = (event) => {
       const file = event.target.files[0];
@@ -84,9 +85,6 @@ export default function MissingEnrolPage() {
           const agingImageBlob = await fetch(resultImageSrc).then(res => res.blob());
           formData.append('img_aging', agingImageBlob, 'aged_image.png');
       }
-      
-      // 임의의 세션 ID 생성
-      formData.append('session_id', sessionId);
       
       formData.append('gender', gender);
       formData.append('birth', birth);

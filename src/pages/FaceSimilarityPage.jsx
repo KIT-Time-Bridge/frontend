@@ -29,6 +29,8 @@ export default function FaceSimilarityPage() {
                 const apiData = response.data;
                 setData(apiData);
                 
+                console.log(apiData)
+
                 // 초기 선택된 사용자 설정
                 if (apiData.missing_posts.length > 0) {
                     setSelectedUser(apiData.missing_posts[0]);
@@ -52,7 +54,8 @@ export default function FaceSimilarityPage() {
                             missingId: id,
                         },
                     });
-                    setSimilarityLists(response.data); // 응답 데이터로 상태 업데이트
+                    setSimilarityLists(response.data.similarPosts); // 응답 데이터로 상태 업데이트
+                    console.log(response.data.similarPosts)
                 } catch (error) {
                     console.error('유사도 API 호출 중 오류 발생:', error);
                     setSimilarityLists([]); // 오류 발생 시 목록 초기화
@@ -147,23 +150,23 @@ export default function FaceSimilarityPage() {
                         {similarityLists.length > 0 ? (
                             similarityLists.map((item, index) => (
                                 <FaceSimilarityCard 
-                                    key={item.id}
                                     rank={index + 1}
-                                    similarity={item.similarity_score}
-                                    originalImage={getImageUrl(item.original_image_path)}
-                                    genImage={getImageUrl(item.gen_image_path)}
-                                    name={item.name}
-                                    gender={item.gender}
-                                    birth={item.birth_date}
-                                    place={item.missing_place}
-                                    date={item.missing_date}
+                                    similarity={item.score}
+                                    originalImage={getImageUrl(item.post.face_img_origin)}
+                                    genImage={getImageUrl(item.post.face_img_aging)}
+                                    name={item.post.missing_name}
+                                    gender={item.post.gender_id === 1 ? '남' : '여'}
+                                    birth={item.post.missing_birth}
+                                    place={item.post.missing_place}
+                                    date={item.post.missing_date}
                                     showGenImage={activeType === '가족' ? true : false}
+
                                 />
                             ))
                         ) : (
                             <p>유사도 순위 정보가 없습니다.</p>
                         )}
-                        <Pagination startPage={1} endPage={5} />
+                        {/* <Pagination startPage={1} endPage={5} /> */}
                     </div>
                 </div>
             </div>
