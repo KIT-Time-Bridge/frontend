@@ -62,9 +62,16 @@ export default function RegionSelector({ value, onChange, className }) {
 
   const doList = Object.keys(simplifiedRegions);
   const siList = selectedDo && simplifiedRegions[selectedDo] ? Object.keys(simplifiedRegions[selectedDo]) : [];
-  const dongList = selectedDo && selectedSi && simplifiedRegions[selectedDo] && simplifiedRegions[selectedDo][selectedSi] 
-    ? simplifiedRegions[selectedDo][selectedSi] 
-    : [];
+  
+  // 읍면동 리스트 가져오기
+  let dongList = [];
+  if (selectedDo && selectedSi && simplifiedRegions[selectedDo] && simplifiedRegions[selectedDo][selectedSi]) {
+    const dongData = simplifiedRegions[selectedDo][selectedSi];
+    // 배열인지 확인
+    if (Array.isArray(dongData)) {
+      dongList = dongData;
+    }
+  }
 
   return (
     <div className={`${styles.regionSelector} ${className || ''}`}>
