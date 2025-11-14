@@ -4,9 +4,17 @@ import styles from './Searchbar.module.css';
 import { FaSearch } from "react-icons/fa";
 import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
 
-export default function Searchbar({ onSearch, searchFilters, onFilterChange }) {
+export default function Searchbar({ onSearch, searchFilters }) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [nameSearch, setNameSearch] = useState('');
+  const [localFilters, setLocalFilters] = useState({
+    missing_situation: '',
+    missing_extra_evidence: '',
+    gender_id: '',
+    missing_birth: '',
+    missing_date: '',
+    missing_place: '',
+  });
   const filterRef = useRef(null);
 
   useEffect(() => {
@@ -25,33 +33,50 @@ export default function Searchbar({ onSearch, searchFilters, onFilterChange }) {
     };
   }, [isFilterOpen]);
 
+  // searchFilters가 외부에서 초기화되면 로컬 state도 초기화
+  useEffect(() => {
+    if (!searchFilters || Object.values(searchFilters).every(v => v === null || v === '')) {
+      setLocalFilters({
+        missing_situation: '',
+        missing_extra_evidence: '',
+        gender_id: '',
+        missing_birth: '',
+        missing_date: '',
+        missing_place: '',
+      });
+      setNameSearch('');
+    }
+  }, [searchFilters]);
+
   const handleNameSearch = (e) => {
     const value = e.target.value;
     setNameSearch(value);
   };
 
-  const handleFilterChange = (field, value) => {
-    if (onFilterChange) {
-      const newFilters = {
-        ...searchFilters,
-        [field]: value || null,
-      };
-      onFilterChange(newFilters);
-    }
+  const handleLocalFilterChange = (field, value) => {
+    setLocalFilters(prev => ({
+      ...prev,
+      [field]: value || '',
+    }));
   };
 
   const handleSearch = () => {
     const filters = {
-      missing_name: nameSearch || null,
-      missing_situation: searchFilters?.missing_situation || null,
-      missing_extra_evidence: searchFilters?.missing_extra_evidence || null,
+      missing_name: nameSearch.trim() || null,
+      missing_situation: localFilters.missing_situation.trim() || null,
+      missing_extra_evidence: localFilters.missing_extra_evidence.trim() || null,
+      gender_id: localFilters.gender_id || null,
+      missing_birth: localFilters.missing_birth || null,
+      missing_date: localFilters.missing_date || null,
+      missing_place: localFilters.missing_place.trim() || null,
     };
 
     // 최소 하나의 필터가 있어야 함
-    const hasAnyFilter = filters.missing_name || filters.missing_situation || filters.missing_extra_evidence;
+    const hasAnyFilter = filters.missing_name || filters.missing_situation || filters.missing_extra_evidence 
+      || filters.gender_id || filters.missing_birth || filters.missing_date || filters.missing_place;
     
     if (!hasAnyFilter) {
-      alert('이름, 실종상황, 추가단서 중 최소 하나는 입력해주세요.');
+      alert('검색 조건을 최소 하나 이상 입력해주세요.');
       return;
     }
 
@@ -105,8 +130,8 @@ export default function Searchbar({ onSearch, searchFilters, onFilterChange }) {
               type="text"
               className={styles.filterInput}
               placeholder="실종 상황 키워드 입력..."
-              value={searchFilters?.missing_situation || ''}
-              onChange={(e) => handleFilterChange('missing_situation', e.target.value)}
+              value={localFilters.missing_situation}
+              onChange={(e) => handleLocalFilterChange('missing_situation', e.target.value)}
             />
           </div>
           <div className={styles.filterItem}>
@@ -115,8 +140,48 @@ export default function Searchbar({ onSearch, searchFilters, onFilterChange }) {
               type="text"
               className={styles.filterInput}
               placeholder="추가 단서 키워드 입력..."
-              value={searchFilters?.missing_extra_evidence || ''}
-              onChange={(e) => handleFilterChange('missing_extra_evidence', e.target.value)}
+              value={localFilters.missing_extra_evidence}
+              onChange={(e) => handleLocalFilterChange('missing_extra_evidence', e.target.value)}
+            />
+          </div>
+          <div className={styles.filterItem}>
+            <label className={styles.filterLabel}>성별</label>
+            <select
+              className={styles.filterInput}
+              value={localFilters.gender_id}
+              onChange={(e) => handleLocalFilterChange('gender_id', e.target.value)}
+            >
+              <option value="">선택 안 함</option>
+              <option value="1">남</option>
+              <option value="2">여</option>
+            </select>
+          </div>
+          <div className={styles.filterItem}>
+            <label className={styles.filterLabel}>생년월일</label>
+            <input
+              type="date"
+              className={styles.filterInput}
+              value={localFilters.missing_birth}
+              onChange={(e) => handleLocalFilterChange('missing_birth', e.target.value)}
+            />
+          </div>
+          <div className={styles.filterItem}>
+            <label className={styles.filterLabel}>실종일자</label>
+            <input
+              type="date"
+              className={styles.filterInput}
+              value={localFilters.missing_date}
+              onChange={(e) => handleLocalFilterChange('missing_date', e.target.value)}
+            />
+          </div>
+          <div className={styles.filterItem}>
+            <label className={styles.filterLabel}>실종장소</label>
+            <input
+              type="text"
+              className={styles.filterInput}
+              placeholder="실종장소 키워드 입력..."
+              value={localFilters.missing_place}
+              onChange={(e) => handleLocalFilterChange('missing_place', e.target.value)}
             />
           </div>
         </div>
