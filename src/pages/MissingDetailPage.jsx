@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import EmailModal from '../components/EmailModal';
 
 import styles from './MissingDetailPage.module.css';
 
@@ -16,6 +17,8 @@ export default function MissingDetailPage() {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -43,6 +46,38 @@ export default function MissingDetailPage() {
 
     fetchDetail();
   }, [missingId]);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get('/api/users/status');
+        setIsLoggedIn(response.data === true);
+      } catch (error) {
+        console.error('로그인 상태 확인 오류:', error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  const handleSendEmail = async (missingId, text) => {
+    try {
+      const response = await axios.post('/api/users/send_to_mail', null, {
+        params: {
+          missing_id: missingId,
+          text: text,
+        },
+      });
+      alert('메일이 성공적으로 전송되었습니다.');
+      return response.data;
+    } catch (error) {
+      console.error('메일 전송 실패:', error);
+      const errorMessage = error.response?.data?.detail || '메일 전송에 실패했습니다.';
+      alert(errorMessage);
+      throw error;
+    }
+  };
 
   const getImageUrl = (path) => {
     if (!path) return null;
@@ -81,6 +116,11 @@ export default function MissingDetailPage() {
             <p className={styles.subtitle}>실종자가 등록한 상세 정보를 확인할 수 있습니다.</p>
           </div>
           <div className={styles.headerButtons}>
+            {isLoggedIn && (
+              <button type="button" className="btn-mint" onClick={() => setIsEmailModalOpen(true)}>
+                메일 보내기
+              </button>
+            )}
             <button type="button" className="btn-white" onClick={() => navigate(-1)}>
               목록으로
             </button>
@@ -126,6 +166,13 @@ export default function MissingDetailPage() {
         )}
       </main>
       <Footer />
+      <EmailModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        onSend={handleSendEmail}
+        missingId={missingId}
+        missingName={detail?.missing_name || ''}
+      />
     </div>
   );
 }
