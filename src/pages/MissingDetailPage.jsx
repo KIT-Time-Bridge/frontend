@@ -73,8 +73,9 @@ export default function MissingDetailPage() {
       return response.data;
     } catch (error) {
       console.error('메일 전송 실패:', error);
-      const errorMessage = error.response?.data?.detail || '메일 전송에 실패했습니다.';
-      alert(errorMessage);
+      console.error('에러 응답:', error.response?.data);
+      const errorMessage = error.response?.data?.detail || error.response?.data?.message || '메일 전송에 실패했습니다.';
+      alert(`메일 전송 실패: ${errorMessage}`);
       throw error;
     }
   };
