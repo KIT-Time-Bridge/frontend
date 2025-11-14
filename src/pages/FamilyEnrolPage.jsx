@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from "../components/Navbar";
+import RegionSelector from "../components/RegionSelector";
 import styles from './FamilyEnrolPage.module.css';
 import Footer from "../components/Footer";
 
@@ -12,6 +13,7 @@ export default function MissingEnrolPage() {
   const [resultImageSrc, setResultImageSrc] = useState("");
   const [missingSituation, setMissingSituation] = useState("");
   const [missingExtraEvidence, setMissingExtraEvidence] = useState("");
+  const [missingPlace, setMissingPlace] = useState("");
   const navigate = useNavigate();
 
   const handleImageChange = (event) => {
@@ -66,7 +68,7 @@ export default function MissingEnrolPage() {
       const gender = document.getElementById('gender').value;
       const birth = document.getElementById('birth').value;
       const missingDate = document.getElementById('missingDate').value;
-      const missing_place = `${document.getElementById('do').value} ${document.getElementById('si').value} ${document.getElementById('dong').value}`;
+      const missing_place = missingPlace;
 
       // 필수 필드 유효성 검사
       if (!name || !birth || !missingDate || !imageFile || !resultImageSrc) {
@@ -174,15 +176,10 @@ export default function MissingEnrolPage() {
                   </div>
                   <div className={styles.infoOneContainer}>
                       <p className={styles.infoKey}>실종장소</p>
-                      <select name='do' id='do' className={styles.select}>
-                          <option value="광역시도">광역시도</option>
-                      </select>
-                      <select name='si' id='si' className={styles.select}>
-                          <option value="시군구">시군구</option>
-                      </select>
-                      <select name='dong' id='dong' className={styles.select}>
-                          <option value="읍면동">읍면동</option>
-                      </select>
+                      <RegionSelector
+                          value={missingPlace}
+                          onChange={setMissingPlace}
+                      />
                   </div>
                   {/* --- 새로운 필드 추가 --- */}
                   <div className={styles.infoOneContainer}>

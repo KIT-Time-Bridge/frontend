@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './Searchbar.module.css';
+import RegionSelector from './RegionSelector';
 
 import { FaSearch } from "react-icons/fa";
 import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
@@ -8,8 +9,6 @@ export default function Searchbar({ onSearch, searchFilters }) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [nameSearch, setNameSearch] = useState('');
   const [localFilters, setLocalFilters] = useState({
-    missing_situation: '',
-    missing_extra_evidence: '',
     gender_id: '',
     missing_birth: '',
     missing_date: '',
@@ -37,8 +36,6 @@ export default function Searchbar({ onSearch, searchFilters }) {
   useEffect(() => {
     if (!searchFilters || Object.values(searchFilters).every(v => v === null || v === '')) {
       setLocalFilters({
-        missing_situation: '',
-        missing_extra_evidence: '',
         gender_id: '',
         missing_birth: '',
         missing_date: '',
@@ -61,19 +58,19 @@ export default function Searchbar({ onSearch, searchFilters }) {
   };
 
   const handleSearch = () => {
+    // 통합 검색: 이름 검색창의 값을 이름, 실종상황, 추가단서 모두에 적용
+    const searchKeywords = nameSearch.trim();
+    
     const filters = {
-      missing_name: nameSearch.trim() || null,
-      missing_situation: localFilters.missing_situation.trim() || null,
-      missing_extra_evidence: localFilters.missing_extra_evidence.trim() || null,
+      search_keywords: searchKeywords || null, // 통합 검색 키워드
       gender_id: localFilters.gender_id || null,
       missing_birth: localFilters.missing_birth || null,
       missing_date: localFilters.missing_date || null,
-      missing_place: localFilters.missing_place.trim() || null,
+      missing_place: localFilters.missing_place || null,
     };
 
     // 최소 하나의 필터가 있어야 함
-    const hasAnyFilter = filters.missing_name || filters.missing_situation || filters.missing_extra_evidence 
-      || filters.gender_id || filters.missing_birth || filters.missing_date || filters.missing_place;
+    const hasAnyFilter = filters.search_keywords || filters.gender_id || filters.missing_birth || filters.missing_date || filters.missing_place;
     
     if (!hasAnyFilter) {
       alert('검색 조건을 최소 하나 이상 입력해주세요.');
@@ -96,7 +93,7 @@ export default function Searchbar({ onSearch, searchFilters }) {
       <input 
         type="text" 
         className={styles.searchInput}
-        placeholder="이름으로 검색..."
+        placeholder="이름, 실종상황, 추가단서로 검색 (띄어쓰기로 여러 키워드 검색 가능)..."
         value={nameSearch}
         onChange={handleNameSearch}
         onKeyPress={handleKeyPress}
@@ -124,26 +121,6 @@ export default function Searchbar({ onSearch, searchFilters }) {
       
       {isFilterOpen && (
         <div className={styles.filterMenu} ref={filterRef}>
-          <div className={styles.filterItem}>
-            <label className={styles.filterLabel}>실종 상황</label>
-            <input
-              type="text"
-              className={styles.filterInput}
-              placeholder="실종 상황 키워드 입력..."
-              value={localFilters.missing_situation}
-              onChange={(e) => handleLocalFilterChange('missing_situation', e.target.value)}
-            />
-          </div>
-          <div className={styles.filterItem}>
-            <label className={styles.filterLabel}>추가 단서</label>
-            <input
-              type="text"
-              className={styles.filterInput}
-              placeholder="추가 단서 키워드 입력..."
-              value={localFilters.missing_extra_evidence}
-              onChange={(e) => handleLocalFilterChange('missing_extra_evidence', e.target.value)}
-            />
-          </div>
           <div className={styles.filterItem}>
             <label className={styles.filterLabel}>성별</label>
             <select
@@ -176,12 +153,10 @@ export default function Searchbar({ onSearch, searchFilters }) {
           </div>
           <div className={styles.filterItem}>
             <label className={styles.filterLabel}>실종장소</label>
-            <input
-              type="text"
-              className={styles.filterInput}
-              placeholder="실종장소 키워드 입력..."
+            <RegionSelector
               value={localFilters.missing_place}
-              onChange={(e) => handleLocalFilterChange('missing_place', e.target.value)}
+              onChange={(value) => handleLocalFilterChange('missing_place', value)}
+              className={styles.regionSelector}
             />
           </div>
         </div>
