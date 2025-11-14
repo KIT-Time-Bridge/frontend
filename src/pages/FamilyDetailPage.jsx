@@ -66,7 +66,6 @@ export default function FamilyDetailPage() {
         { label: '실종일', value: formatDate(detail.missing_date) },
         { label: '실종장소', value: detail.missing_place },
         { label: '사진 촬영 시 나이', value: detail.photo_age ? `${detail.photo_age}세` : '-' },
-        { label: '등록자 ID', value: detail.user_id },
       ]
     : [];
 
@@ -86,9 +85,6 @@ export default function FamilyDetailPage() {
           <div className={styles.headerButtons}>
             <button type="button" className="btn-white" onClick={() => navigate(-1)}>
               목록으로
-            </button>
-            <button type="button" className="btn-mint" onClick={() => navigate('/face-similarity')}>
-              얼굴 유사도 페이지
             </button>
           </div>
         </div>
