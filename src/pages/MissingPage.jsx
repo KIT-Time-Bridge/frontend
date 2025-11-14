@@ -15,6 +15,11 @@ export default function MissingPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [cardData, setCardData] = useState([]);
     const [totalPages, setTotalPages] = useState(); 
+    const [searchFilters, setSearchFilters] = useState({
+        missing_name: null,
+        missing_situation: null,
+        missing_extra_evidence: null,
+    });
 
     // 2. useNavigate 훅을 초기화합니다.
     const navigate = useNavigate();
@@ -24,7 +29,20 @@ export default function MissingPage() {
     useEffect(() => {
         const fetchMissingPersons = async () => {
             try {
-                const response = await axios.post(`/api/posts/all_missing_search_missing?pageNum=${currentPage}`);
+                // 필터가 하나라도 있으면 검색 파라미터에 포함
+                const hasFilters = searchFilters.missing_name || searchFilters.missing_situation || searchFilters.missing_extra_evidence;
+                
+                const params = {
+                    pageNum: currentPage,
+                };
+                
+                if (hasFilters) {
+                    if (searchFilters.missing_name) params.missing_name = searchFilters.missing_name;
+                    if (searchFilters.missing_situation) params.missing_situation = searchFilters.missing_situation;
+                    if (searchFilters.missing_extra_evidence) params.missing_extra_evidence = searchFilters.missing_extra_evidence;
+                }
+                
+                const response = await axios.post('/api/posts/all_missing_search_missing', null, { params });
                 const missingData = response.data.posts; 
 
                 const transformedData = missingData.map(item => {
@@ -48,10 +66,19 @@ export default function MissingPage() {
         };
 
         fetchMissingPersons();
-    }, [currentPage]);
+    }, [currentPage, searchFilters]);
 
     const handlePageChange = (page) => {
         setSearchParams({ page: page });
+    };
+
+    const handleSearch = (filters) => {
+        setSearchFilters(filters);
+        setSearchParams({ page: 1 }); // 검색 시 첫 페이지로 이동
+    };
+
+    const handleFilterChange = (filters) => {
+        setSearchFilters(filters);
     };
 
     const calculatePageGroup = () => {
@@ -102,7 +129,11 @@ export default function MissingPage() {
                     <h1 className={styles.missingTitle}>실종자 찾기</h1>
                     <p className={styles.missingDescription}>실종자 본인이 등록한 실종자 게시판 입니다.</p>
                 </div>
-                <Searchbar/>
+                <Searchbar 
+                    onSearch={handleSearch}
+                    searchFilters={searchFilters}
+                    onFilterChange={handleFilterChange}
+                />
                 <div className={styles.enrolBtn}>
                     {/* 9. <Link>를 <button>으로 변경하고 onClick에 핸들러 연결 */}
                     <button className="btn-mint" onClick={handleEnrolClick}>
