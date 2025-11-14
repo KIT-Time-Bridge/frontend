@@ -15,11 +15,19 @@ export default function EmailModal({ isOpen, onClose, onSend, missingId, missing
     }
     setSending(true);
     try {
-      await onSend(missingId, emailText);
+      // 타임아웃 설정 (최대 15초 대기)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('요청 시간이 초과되었습니다.')), 15000)
+      );
+      
+      await Promise.race([onSend(missingId, emailText), timeoutPromise]);
       setEmailText('');
       onClose();
     } catch (error) {
       console.error('메일 전송 실패:', error);
+      if (error.message === '요청 시간이 초과되었습니다.') {
+        alert('메일 전송에 시간이 오래 걸리고 있습니다. 잠시 후 다시 시도해주세요.');
+      }
     } finally {
       setSending(false);
     }
