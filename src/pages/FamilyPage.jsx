@@ -16,9 +16,7 @@ export default function FamilyPage() {
     const [cardData, setCardData] = useState([]);
     const [totalPages, setTotalPages] = useState();
     const [searchFilters, setSearchFilters] = useState({
-        missing_name: null,
-        missing_situation: null,
-        missing_extra_evidence: null,
+        search_keywords: null,
         gender_id: null,
         missing_birth: null,
         missing_date: null,
@@ -34,17 +32,14 @@ export default function FamilyPage() {
         const fetchFamilyPosts = async () => {
             try {
                 // 필터가 하나라도 있으면 검색 파라미터에 포함
-                const hasFilters = searchFilters.missing_name || searchFilters.missing_situation || searchFilters.missing_extra_evidence
-                    || searchFilters.gender_id || searchFilters.missing_birth || searchFilters.missing_date || searchFilters.missing_place;
+                const hasFilters = searchFilters.search_keywords || searchFilters.gender_id || searchFilters.missing_birth || searchFilters.missing_date || searchFilters.missing_place;
                 
                 const params = {
                     pageNum: currentPage,
                 };
                 
                 if (hasFilters) {
-                    if (searchFilters.missing_name) params.missing_name = searchFilters.missing_name;
-                    if (searchFilters.missing_situation) params.missing_situation = searchFilters.missing_situation;
-                    if (searchFilters.missing_extra_evidence) params.missing_extra_evidence = searchFilters.missing_extra_evidence;
+                    if (searchFilters.search_keywords) params.search_keywords = searchFilters.search_keywords;
                     if (searchFilters.gender_id) params.gender_id = parseInt(searchFilters.gender_id);
                     if (searchFilters.missing_birth) params.missing_birth = searchFilters.missing_birth;
                     if (searchFilters.missing_date) params.missing_date = searchFilters.missing_date;
