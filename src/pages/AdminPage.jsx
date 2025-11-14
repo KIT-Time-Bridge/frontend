@@ -75,6 +75,19 @@ export default function AdminPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/users/logout', {}, {
+        withCredentials: true
+      });
+      alert('로그아웃되었습니다.');
+      navigate('/');
+    } catch (error) {
+      console.error('로그아웃 처리 중 오류:', error);
+      alert('로그아웃에 실패했습니다.');
+    }
+  };
+
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '/no-image.jpg';
     if (imagePath.startsWith('http')) return imagePath;
@@ -91,7 +104,12 @@ export default function AdminPage() {
 
   return (
     <div className={styles.adminContainer}>
-      <h1 className={styles.title}>관리자 페이지</h1>
+      <div className={styles.header}>
+        <h1 className={styles.title}>관리자 페이지</h1>
+        <button className={styles.logoutButton} onClick={handleLogout}>
+          로그아웃
+        </button>
+      </div>
       
       <div className={styles.tabContainer}>
         <button
