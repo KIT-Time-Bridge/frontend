@@ -29,12 +29,18 @@ export default function FamilyPage() {
     useEffect(() => {
         const fetchFamilyPosts = async () => {
             try {
+                // 필터가 하나라도 있으면 검색 파라미터에 포함
+                const hasFilters = searchFilters.missing_name || searchFilters.missing_situation || searchFilters.missing_extra_evidence;
+                
                 const params = {
                     pageNum: currentPage,
-                    ...(searchFilters.missing_name && { missing_name: searchFilters.missing_name }),
-                    ...(searchFilters.missing_situation && { missing_situation: searchFilters.missing_situation }),
-                    ...(searchFilters.missing_extra_evidence && { missing_extra_evidence: searchFilters.missing_extra_evidence }),
                 };
+                
+                if (hasFilters) {
+                    if (searchFilters.missing_name) params.missing_name = searchFilters.missing_name;
+                    if (searchFilters.missing_situation) params.missing_situation = searchFilters.missing_situation;
+                    if (searchFilters.missing_extra_evidence) params.missing_extra_evidence = searchFilters.missing_extra_evidence;
+                }
                 
                 const response = await axios.post('/api/posts/all_missing_search_family', null, { params });
                 const familyData = response.data.posts;
