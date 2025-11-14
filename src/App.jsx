@@ -10,6 +10,7 @@ import MultimodalSearchPage from './pages/MultimodalSearchPage';
 import MissingEnrolPage from './pages/MissingEnrolPage';
 import FamilyEnrolPage from './pages/FamilyEnrolPage';
 import MissingDetailPage from './pages/MissingDetailPage';
+import FamilyDetailPage from './pages/FamilyDetailPage';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/family" element={<FamilyPage />} />
+        <Route path="/family/:familyId" element={<FamilyDetailPage />} />
         <Route path="/missing" element={<MissingPage />} />
         <Route path="/missing/:missingId" element={<MissingDetailPage />} />
         <Route path="/face-similarity" element={<FaceSimilarityPage />} />

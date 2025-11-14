@@ -2,8 +2,18 @@ import styles from './MissingCard.module.css'
 import { Link } from 'react-router-dom';
 
 export default function MissingCard({ id, originalImage, name, gender, birth, place, date }) {
+  if (!id) {
+    console.error('MissingCard: id prop이 없습니다!');
+    return null;
+  }
+
+  const handleClick = (e) => {
+    console.log('MissingCard clicked, id:', id);
+    // Link의 기본 동작을 막지 않음
+  };
+
   return (
-    <Link to={`/missing/${id}`} className={styles.cardLink}>
+    <Link to={`/missing/${id}`} className={styles.cardLink} onClick={handleClick}>
       <div className={styles.cardContainer}>
           <div className={styles.cardImageGroup}>
               <p className={styles.cardNameText}>{name} ({gender})</p>

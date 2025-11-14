@@ -117,6 +117,7 @@ export default function FamilyPage() {
                     {cardData.map((item) => (
                         <FamilyCard 
                             key={item.id}
+                            id={item.id}
                             originalImage={getImageUrl(item.originalImage)}
                             genImage={getImageUrl(item.genImage)}
                             name={item.name}

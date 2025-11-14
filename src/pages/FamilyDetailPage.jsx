@@ -5,12 +5,12 @@ import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-import styles from './MissingDetailPage.module.css';
+import styles from './FamilyDetailPage.module.css';
 
 const IMAGE_HOST = 'http://202.31.202.8/images/';
 
-export default function MissingDetailPage() {
-  const { missingId } = useParams();
+export default function FamilyDetailPage() {
+  const { familyId } = useParams();
   const navigate = useNavigate();
 
   const [detail, setDetail] = useState(null);
@@ -19,30 +19,30 @@ export default function MissingDetailPage() {
 
   useEffect(() => {
     const fetchDetail = async () => {
-      if (!missingId) {
-        console.log('missingId가 없습니다:', missingId);
+      if (!familyId) {
+        console.log('familyId가 없습니다:', familyId);
         return;
       }
-      console.log('상세 정보 조회 시작, missingId:', missingId);
+      console.log('상세 정보 조회 시작, familyId:', familyId);
       setLoading(true);
       setError('');
       try {
         const response = await axios.post('/api/posts/detail_missing_search', null, {
-          params: { missing_id: missingId },
+          params: { missing_id: familyId },
         });
         console.log('API 응답:', response.data);
         setDetail(response.data);
       } catch (err) {
-        console.error('실종자 상세 조회 실패:', err);
+        console.error('가족 상세 조회 실패:', err);
         console.error('에러 상세:', err.response?.data || err.message);
-        setError('실종자 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
+        setError('가족 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchDetail();
-  }, [missingId]);
+  }, [familyId]);
 
   const getImageUrl = (path) => {
     if (!path) return null;
@@ -65,11 +65,13 @@ export default function MissingDetailPage() {
         { label: '생년월일', value: formatDate(detail.missing_birth) },
         { label: '실종일', value: formatDate(detail.missing_date) },
         { label: '실종장소', value: detail.missing_place },
+        { label: '사진 촬영 시 나이', value: detail.photo_age ? `${detail.photo_age}세` : '-' },
         { label: '등록자 ID', value: detail.user_id },
       ]
     : [];
 
   const originImage = getImageUrl(detail?.face_img_origin);
+  const agingImage = getImageUrl(detail?.face_img_aging);
 
   return (
     <div>
@@ -77,9 +79,9 @@ export default function MissingDetailPage() {
       <main className={styles.wrapper}>
         <div className={styles.headerRow}>
           <div>
-            <p className={styles.breadcrumb}>실종자 찾기 &gt; 상세 정보</p>
-            <h1 className={styles.title}>실종자 상세 조회</h1>
-            <p className={styles.subtitle}>실종자가 등록한 상세 정보를 확인할 수 있습니다.</p>
+            <p className={styles.breadcrumb}>가족 찾기 &gt; 상세 정보</p>
+            <h1 className={styles.title}>가족 상세 조회</h1>
+            <p className={styles.subtitle}>가족이 등록한 상세 정보를 확인할 수 있습니다.</p>
           </div>
           <div className={styles.headerButtons}>
             <button type="button" className="btn-white" onClick={() => navigate(-1)}>
@@ -98,12 +100,26 @@ export default function MissingDetailPage() {
           <>
             <section className={styles.profileSection}>
               <div className={styles.imagePanel}>
-                <img
-                  src={originImage || '/no-image.jpg'}
-                  alt={`${detail.missing_name} 사진`}
-                  className={styles.profileImage}
-                />
-                <p className={styles.imageCaption}>최근 등록 사진</p>
+                <div className={styles.imageGroup}>
+                  <div className={styles.imageItem}>
+                    <img
+                      src={originImage || '/no-image.jpg'}
+                      alt={`${detail.missing_name} 원본 사진`}
+                      className={styles.profileImage}
+                    />
+                    <p className={styles.imageCaption}>원본 사진</p>
+                  </div>
+                  {agingImage && (
+                    <div className={styles.imageItem}>
+                      <img
+                        src={agingImage}
+                        alt={`${detail.missing_name} 에이징 사진`}
+                        className={styles.profileImage}
+                      />
+                      <p className={styles.imageCaption}>에이징 사진</p>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className={styles.infoPanel}>
                 <div className={styles.infoGrid}>
@@ -133,5 +149,4 @@ export default function MissingDetailPage() {
     </div>
   );
 }
-
 
