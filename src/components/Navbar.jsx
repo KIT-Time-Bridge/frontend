@@ -8,16 +8,35 @@ import { FaHandshake } from "react-icons/fa";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get('/api/users/status');
+        const response = await axios.get('/api/users/status', {
+          withCredentials: true
+        });
         setIsLoggedIn(response.data);
+        
+        // 로그인 상태인 경우 관리자 여부 확인
+        if (response.data) {
+          try {
+            const adminCheck = await axios.get('/api/users/is_admin', {
+              withCredentials: true
+            });
+            setIsAdmin(adminCheck.data.is_admin || false);
+          } catch (adminError) {
+            console.error('관리자 확인 오류:', adminError);
+            setIsAdmin(false);
+          }
+        } else {
+          setIsAdmin(false);
+        }
       } catch (error) {
         console.error('로그인 상태 확인 오류:', error);
         setIsLoggedIn(false);
+        setIsAdmin(false);
       }
     };
 
@@ -26,8 +45,11 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/users/logout');
+      await axios.post('/api/users/logout', {}, {
+        withCredentials: true
+      });
       setIsLoggedIn(false);
+      setIsAdmin(false);
       navigate('/');
     } catch (error) {
       console.error('로그아웃 처리 중 오류:', error);
@@ -68,7 +90,12 @@ export default function Navbar() {
 
       <div className={styles.navBtnGroup}>
         {isLoggedIn ? (
-          <button className='btn-white' onClick={handleLogout}>로그아웃</button>
+          <>
+            {isAdmin && (
+              <Link className='btn-mint' to="/admin">관리자 페이지</Link>
+            )}
+            <button className='btn-white' onClick={handleLogout}>로그아웃</button>
+          </>
         ) : (
           <>
             <Link className='btn-mint' to="/login">로그인</Link>

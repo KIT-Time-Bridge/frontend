@@ -22,27 +22,8 @@ export default function LoginPage() {
       // try 블록에 왔다는 것 자체가 2xx 응답(성공)을 의미합니다.
       // 따라서 별도 if문 없이 바로 성공 처리를 합니다.
       console.log('로그인 성공:', response.data);
-      
-      // 관리자 여부 확인
-      try {
-        const adminCheck = await axios.get('/api/users/is_admin', {
-          withCredentials: true
-        });
-        
-        if (adminCheck.data.is_admin) {
-          // 관리자인 경우 관리자 페이지로 이동
-          navigate('/admin');
-        } else {
-          // 일반 사용자인 경우 홈페이지로 이동
-          alert('로그인에 성공했습니다.');
-          navigate('/');
-        }
-      } catch (adminError) {
-        console.error('관리자 확인 실패:', adminError);
-        // 관리자 확인 실패 시 일반 사용자로 처리
-        alert('로그인에 성공했습니다.');
-        navigate('/');
-      }
+      alert('로그인에 성공했습니다.');
+      navigate('/'); // 모든 사용자는 홈페이지로 이동
 
     } catch (error) {
       console.error('로그인 중 오류 발생:', error);
