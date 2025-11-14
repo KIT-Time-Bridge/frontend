@@ -74,8 +74,8 @@ export default function RegionSelector({ value, onChange, className }) {
         className={styles.select}
       >
         <option value="">도/시 선택</option>
-        {doList.map(do => (
-          <option key={do} value={do}>{do}</option>
+        {doList.map(doItem => (
+          <option key={doItem} value={doItem}>{doItem}</option>
         ))}
       </select>
       <select
