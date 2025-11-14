@@ -1,3 +1,10 @@
+.cardLink{
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+}
+
 .cardContainer{
     flex-grow: 1;
     border-radius: 10px;

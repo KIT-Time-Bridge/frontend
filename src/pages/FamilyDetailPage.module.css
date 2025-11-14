@@ -1,0 +1,148 @@
+.wrapper{
+    width: 1280px;
+    margin: 0 auto;
+    padding: 60px 0 80px;
+}
+
+.headerRow{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.breadcrumb{
+    color: #7a7a7a;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+}
+
+.title{
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.subtitle{
+    margin-top: 8px;
+    color: #4f4f4f;
+}
+
+.headerButtons{
+    display: flex;
+    gap: 12px;
+}
+
+.stateBox{
+    margin-top: 40px;
+    padding: 40px;
+    background: #f7f9fb;
+    border: 1px solid #e0e7ef;
+    border-radius: 16px;
+    text-align: center;
+    color: #666;
+}
+
+.profileSection{
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 40px;
+    align-items: stretch;
+}
+
+.imagePanel{
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+}
+
+.imageGroup{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.imageItem{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profileImage{
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+    background-color: #f1f1f1;
+}
+
+.imageCaption{
+    margin: 0;
+    color: #7a7a7a;
+    font-size: 0.9rem;
+}
+
+.infoPanel{
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 32px;
+}
+
+.infoGrid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.infoRow{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.infoLabel{
+    color: #8b8b8b;
+    font-size: 0.9rem;
+}
+
+.infoValue{
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d2d2d;
+}
+
+.descriptionSection{
+    margin-top: 32px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 28px 32px;
+}
+
+.descriptionSection h2{
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.4rem;
+}
+
+.descriptionSection p{
+    margin: 0;
+    line-height: 1.7;
+    color: #444;
+}
+
+@media (max-width: 1024px){
+    .wrapper{
+        width: 100%;
+        padding: 40px 24px 60px;
+    }
+
+    .profileSection{
+        grid-template-columns: 1fr;
+    }
+}
+
