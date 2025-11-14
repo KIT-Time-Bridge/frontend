@@ -11,6 +11,7 @@ import MissingEnrolPage from './pages/MissingEnrolPage';
 import FamilyEnrolPage from './pages/FamilyEnrolPage';
 import MissingDetailPage from './pages/MissingDetailPage';
 import FamilyDetailPage from './pages/FamilyDetailPage';
+import AdminPage from './pages/AdminPage';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/multimodal-search" element={<MultimodalSearchPage />} />
         <Route path="/missing-enrol" element={<MissingEnrolPage />} />
         <Route path="/family-enrol" element={<FamilyEnrolPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </BrowserRouter>
   )
