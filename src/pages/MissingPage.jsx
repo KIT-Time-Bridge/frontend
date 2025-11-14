@@ -116,6 +116,7 @@ export default function MissingPage() {
                     {cardData.map((item) => (
                         <MissingCard 
                             key={item.id}
+                            id={item.id}
                             originalImage={getImageUrl(item.originalImage)}
                             name={item.name}
                             gender={item.gender === 1 ? '남' : '여'}
