@@ -15,6 +15,11 @@ export default function FamilyPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [cardData, setCardData] = useState([]);
     const [totalPages, setTotalPages] = useState();
+    const [searchFilters, setSearchFilters] = useState({
+        missing_name: null,
+        missing_situation: null,
+        missing_extra_evidence: null,
+    });
 
     // 2. useNavigate 훅을 초기화합니다.
     const navigate = useNavigate();
@@ -24,7 +29,14 @@ export default function FamilyPage() {
     useEffect(() => {
         const fetchFamilyPosts = async () => {
             try {
-                const response = await axios.post(`/api/posts/all_missing_search_family?pageNum=${currentPage}`);
+                const params = {
+                    pageNum: currentPage,
+                    ...(searchFilters.missing_name && { missing_name: searchFilters.missing_name }),
+                    ...(searchFilters.missing_situation && { missing_situation: searchFilters.missing_situation }),
+                    ...(searchFilters.missing_extra_evidence && { missing_extra_evidence: searchFilters.missing_extra_evidence }),
+                };
+                
+                const response = await axios.post('/api/posts/all_missing_search_family', null, { params });
                 const familyData = response.data.posts;
 
                 const transformedData = familyData.map(item => {
@@ -49,10 +61,19 @@ export default function FamilyPage() {
         };
 
         fetchFamilyPosts();
-    }, [currentPage]);
+    }, [currentPage, searchFilters]);
 
     const handlePageChange = (page) => {
         setSearchParams({ page: page });
+    };
+
+    const handleSearch = (filters) => {
+        setSearchFilters(filters);
+        setSearchParams({ page: 1 }); // 검색 시 첫 페이지로 이동
+    };
+
+    const handleFilterChange = (filters) => {
+        setSearchFilters(filters);
     };
 
     const calculatePageGroup = () => {
@@ -103,7 +124,11 @@ export default function FamilyPage() {
                     <h1 className={styles.missingTitle}>가족 찾기</h1>
                     <p className={styles.missingDescription}>가족들이 등록한 실종자 게시판 입니다.</p>
                 </div>
-                <Searchbar/>
+                <Searchbar 
+                    onSearch={handleSearch}
+                    searchFilters={searchFilters}
+                    onFilterChange={handleFilterChange}
+                />
                 <div className={styles.enrolBtn}>
                     {/* 9. <Link>를 <button>으로 변경하고 onClick에 핸들러 연결 */}
                     <button className="btn-mint" onClick={handleEnrolClick}>

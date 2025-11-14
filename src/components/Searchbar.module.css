@@ -1,4 +1,5 @@
 .searchbarContainer{
+    position: relative;
     display: flex;
     width: 600px;
     height: 30px;
@@ -10,6 +11,8 @@
     margin-bottom: 30px;
     align-items: center; 
     gap: 5px;
+    background-color: white;
+    z-index: 10;
 }
 
 .searchbarContainer:hover{
@@ -18,15 +21,77 @@
 
 .searchInput{
     font-family: 'Paperlogy';
-    width: 585px;
+    flex: 1;
     height: 25px;
     border: none;
-    outline: none; /* 클릭 시 나타나는 외곽선 제거 */
+    outline: none;
+    font-size: 1rem;
 }
 
-.searchBtn{
+.filterButton,
+.searchButton{
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #333;
+    transition: color 0.2s;
+}
+
+.filterButton:hover,
+.searchButton:hover{
+    color: #83c5be;
+}
+
+.filterIcon,
+.searchIcon{
     font-size: 1.2rem;
 }
 
+.filterMenu{
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #83c5be;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
 
+.filterItem{
+    margin-bottom: 16px;
+}
+
+.filterItem:last-child{
+    margin-bottom: 0;
+}
+
+.filterLabel{
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.filterInput{
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: 'Paperlogy';
+    font-size: 0.95rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.filterInput:focus{
+    border-color: #83c5be;
+    box-shadow: 0 0 0 3px rgba(131, 197, 190, 0.1);
+}
