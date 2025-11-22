@@ -14,6 +14,7 @@ export default function MissingEnrolPage() {
   const [missingSituation, setMissingSituation] = useState("");
   const [missingExtraEvidence, setMissingExtraEvidence] = useState("");
   const [missingPlace, setMissingPlace] = useState("");
+  const [photoAge, setPhotoAge] = useState("");
   const navigate = useNavigate();
 
   const handleImageChange = (event) => {
@@ -35,14 +36,15 @@ export default function MissingEnrolPage() {
       const birthDateInput = document.getElementById('birth');
       const missingBirth = birthDateInput.value;
 
-      if (!imageFile || !missingBirth) {
-          alert('이미지와 생년월일을 모두 입력해주세요.');
+      if (!imageFile || !missingBirth || !photoAge) {
+          alert('이미지, 생년월일, 사진 당시 나이를 모두 입력해주세요.');
           return;
       }
 
       const formData = new FormData();
       formData.append('img', imageFile);
       formData.append('missing_birth', missingBirth);
+      formData.append('photo_age', photoAge);
 
       try {
           const response = await axios.post('/api/posts/img_aging', formData, {
@@ -71,7 +73,7 @@ export default function MissingEnrolPage() {
       const missing_place = missingPlace;
 
       // 필수 필드 유효성 검사
-      if (!name || !birth || !missingDate || !imageFile || !resultImageSrc) {
+      if (!name || !birth || !missingDate || !imageFile || !resultImageSrc || !photoAge) {
           alert('모든 필수 정보를 입력하고, 이미지 생성을 먼저 진행해 주세요.');
           return;
       }
@@ -94,7 +96,7 @@ export default function MissingEnrolPage() {
       formData.append('missing_situation', missingSituation);
       formData.append('missing_extra_evidence', missingExtraEvidence);
       formData.append('missing_place', missing_place);
-      formData.append('photo_age', 0); // 연령 추정치는 0으로 고정
+      formData.append('photo_age', parseInt(photoAge) || 0); // 사진 당시 나이
 
       try {
           const response = await axios.post('/api/posts/upload', formData, {
@@ -162,6 +164,20 @@ export default function MissingEnrolPage() {
                           type="date"
                           id="birth"
                           className={styles.formInput}
+                          required
+                      />
+                  </div>
+                  <div className={styles.infoOneContainer}>
+                      <p className={styles.infoKey}>사진 당시 나이</p>
+                      <input
+                          type="number"
+                          id="photoAge"
+                          className={styles.formInput}
+                          min="0"
+                          max="120"
+                          value={photoAge}
+                          onChange={(e) => setPhotoAge(e.target.value)}
+                          placeholder="사진 촬영 당시 나이를 입력하세요"
                           required
                       />
                   </div>
