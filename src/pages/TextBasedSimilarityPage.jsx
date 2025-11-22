@@ -52,7 +52,7 @@ export default function TextBasedSimilarityPage() {
                 setError(null);
                 try {
                     const id = selectedUser.mp_id || selectedUser.fp_id;
-                    const response = await axios.post(`/api/posts/image_similarity`, null, {
+                    const response = await axios.post(`/api/posts/text_similarity`, null, {
                         params: {
                             missingId: id,
                         },
