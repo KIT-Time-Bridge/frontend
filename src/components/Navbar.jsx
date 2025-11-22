@@ -56,17 +56,22 @@ export default function Navbar() {
     }
   };
 
-  // 1. '매칭 조회' 클릭 핸들러 함수
-  const handleMatchingClick = (e) => {
-    // 2. <Link>의 기본 동작(즉시 페이지 이동)을 막습니다.
+  // 이미지 매칭 조회 클릭 핸들러 함수
+  const handleImageMatchingClick = (e) => {
     e.preventDefault(); 
-    
-    // 3. useEffect에서 이미 가져온 로그인 state를 확인합니다. (API 재호출 불필요)
     if (isLoggedIn) {
-      // 4. 로그인 상태면 '/face-similarity'로 이동시킵니다.
       navigate('/face-similarity');
     } else {
-      // 5. 비로그인 상태면 경고창을 띄웁니다.
+      alert('로그인이 필요한 기능입니다.');
+    }
+  };
+
+  // 텍스트 매칭 조회 클릭 핸들러 함수
+  const handleTextMatchingClick = (e) => {
+    e.preventDefault(); 
+    if (isLoggedIn) {
+      navigate('/text-similarity');
+    } else {
       alert('로그인이 필요한 기능입니다.');
     }
   };
@@ -78,13 +83,21 @@ export default function Navbar() {
       <div className={styles.navMenuGroup}>
           <Link className={styles.navMenu} to="/missing"><RiUserSearchFill className={styles.navIcon}/>실종자 찾기</Link>
           <Link className={styles.navMenu} to="/family"><MdFamilyRestroom className={styles.navIcon}/>가족 찾기</Link>
-          {/* 6. '매칭 조회' <Link>에 onClick 이벤트 핸들러를 연결합니다. */}
+          {/* 이미지 기반 매칭 조회 */}
           <Link 
             className={styles.navMenu} 
             to="/face-similarity" 
-            onClick={handleMatchingClick}
+            onClick={handleImageMatchingClick}
           >
-            <FaHandshake className={styles.navIcon}/>매칭 조회
+            <FaHandshake className={styles.navIcon}/>이미지 매칭 조회
+          </Link>
+          {/* 텍스트 기반 매칭 조회 */}
+          <Link 
+            className={styles.navMenu} 
+            to="/text-similarity" 
+            onClick={handleTextMatchingClick}
+          >
+            <FaHandshake className={styles.navIcon}/>텍스트 매칭 조회
           </Link>
       </div>
 
