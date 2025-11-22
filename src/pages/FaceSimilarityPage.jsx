@@ -19,7 +19,7 @@ export default function FaceSimilarityPage() {
         family_posts: []
     });
     const [selectedUser, setSelectedUser] = useState(null);
-    const [similarityLists, setSimilarityLists] = useState([]); // 새로운 상태 추가
+    const [similarityLists, setSimilarityLists] = useState([]);
 
     // API 호출 및 데이터 로딩 (초기 실종자/가족 목록)
     useEffect(() => {
