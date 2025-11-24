@@ -6,7 +6,6 @@ import RegisterPage from './pages/RegisterPage';
 import FamilyPage from './pages/FamilyPage';
 import MissingPage from './pages/MissingPage';
 import FaceSimilarityPage from './pages/FaceSimilarityPage';
-import TextBasedSimilarityPage from './pages/TextBasedSimilarityPage';
 import MultimodalSearchPage from './pages/MultimodalSearchPage';
 import MissingEnrolPage from './pages/MissingEnrolPage';
 import FamilyEnrolPage from './pages/FamilyEnrolPage';
@@ -27,7 +26,6 @@ function App() {
         <Route path="/missing" element={<MissingPage />} />
         <Route path="/missing/:missingId" element={<MissingDetailPage />} />
         <Route path="/face-similarity" element={<FaceSimilarityPage />} />
-        <Route path="/text-similarity" element={<TextBasedSimilarityPage />} />
         <Route path="/multimodal-search" element={<MultimodalSearchPage />} />
         <Route path="/missing-enrol" element={<MissingEnrolPage />} />
         <Route path="/family-enrol" element={<FamilyEnrolPage />} />

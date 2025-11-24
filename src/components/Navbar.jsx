@@ -70,7 +70,7 @@ export default function Navbar() {
   const handleTextMatchingClick = (e) => {
     e.preventDefault(); 
     if (isLoggedIn) {
-      navigate('/text-similarity');
+      navigate('/multimodal-search');
     } else {
       alert('로그인이 필요한 기능입니다.');
     }
@@ -94,7 +94,7 @@ export default function Navbar() {
           {/* 텍스트 기반 매칭 조회 */}
           <Link 
             className={styles.navMenu} 
-            to="/text-similarity" 
+            to="/multimodal-search" 
             onClick={handleTextMatchingClick}
           >
             <FaHandshake className={styles.navIcon}/>텍스트 매칭 조회
