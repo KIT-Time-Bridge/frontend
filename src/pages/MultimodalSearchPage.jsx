@@ -136,6 +136,8 @@ export default function MultimodalSearchPage() {
                 type: type,
                 attributes: faceAttributes, // 영문 값으로 전송
                 gender: gender
+            }, {
+                withCredentials: true
             });
             
             if (response.data && response.data.similarPosts) {
@@ -329,25 +331,26 @@ export default function MultimodalSearchPage() {
                         ) : error ? (
                             <p style={{ color: 'red' }}>{error}</p>
                         ) : similarityLists.length > 0 ? (
-                            similarityLists.map((item, index) => (
-                                <FaceSimilarityCard 
-                                    key={item.post.mp_id || item.post.fp_id || index}
-                                    rank={index + 1}
-                                    similarity={item.score}
-                                    originalImage={getImageUrl(item.post.face_img_origin)}
-                                    genImage={getImageUrl(item.post.face_img_aging)}
-                                    name={item.post.missing_name}
-                                    gender={item.post.gender_id === 1 ? '남' : '여'}
-                                    birth={item.post.missing_birth}
-                                    place={item.post.missing_place}
-                                    date={item.post.missing_date}
-                                    showGenImage={activeType === '가족' ? true : false}
-                                />
-                            ))
+                            <>
+                                {similarityLists.map((item, index) => (
+                                    <FaceSimilarityCard 
+                                        key={item.post.mp_id || item.post.fp_id || index}
+                                        rank={index + 1}
+                                        similarity={item.score}
+                                        originalImage={getImageUrl(item.post.face_img_origin)}
+                                        genImage={getImageUrl(item.post.face_img_aging)}
+                                        name={item.post.missing_name}
+                                        gender={item.post.gender_id === 1 ? '남' : '여'}
+                                        birth={item.post.missing_birth}
+                                        place={item.post.missing_place}
+                                        date={item.post.missing_date}
+                                        showGenImage={activeType === '가족' ? true : false}
+                                    />
+                                ))}
+                            </>
                         ) : (
-                            <p>유사도 순위 정보가 없습니다.</p>
+                            <p>검색 버튼을 눌러 유사도를 조회해주세요.</p>
                         )}
-                        {similarityLists.length > 0 && <Pagination startPage={1} endPage={5}></Pagination>}
                     </div>
                 </div>
             </div>

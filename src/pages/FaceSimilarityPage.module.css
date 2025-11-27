@@ -1,8 +1,11 @@
 .container{
-    width: 1280px;
+    width: 100%;
+    max-width: 1280px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
 .descriptionGroup{
@@ -81,12 +84,19 @@
     border: 1px solid #83c5be; /* 기본 테두리 색상 */
     border-radius: 10px;
     outline: none; /* 클릭 시 나타나는 외곽선 제거 */
+    flex: 1;
+    min-width: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
 .faceSimilarityCardsContainer{
     display: flex;
     flex-direction: row;
     gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: flex-start;
 }
 
 .faceSimilarityCardList{
@@ -98,7 +108,12 @@
 
 .selectedUserContainer{
     width: 300px;
+    min-width: 300px;
+    max-width: 300px;
     height: fit-content;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    overflow-x: hidden;
     border-radius: 10px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -106,6 +121,25 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    box-sizing: border-box;
+}
+
+.selectedUserContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.selectedUserContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.selectedUserContainer::-webkit-scrollbar-thumb {
+    background: #83c5be;
+    border-radius: 10px;
+}
+
+.selectedUserContainer::-webkit-scrollbar-thumb:hover {
+    background: #2a9d8f;
 }
 
 .selectUserInfoContainer{
@@ -121,17 +155,33 @@
     gap: 10px;
 }
 
+.imageContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .cardImage{
-    width: 300px;
-    height: 300px;
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    max-height: 300px;
     border-radius: 10px;
     object-fit: cover;
+    box-sizing: border-box;
 }
 
 .cardTextGroup{
     display: flex;
     gap: 10px;
+    padding: 0px 12px;
     justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .cardNameText{
@@ -139,8 +189,9 @@
     text-align: left;
     font-size: 1.5rem;
     font-weight: 700;
-    margin-top: 0px;
-    margin-bottom: 10px;
+    margin: 0px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .cardKeyText{
@@ -148,10 +199,28 @@
     margin: 10px 0px;
     text-align: left;
     font-weight: 700;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 80px;
 }
 
 .cardValueText{
     color: #333;
     margin: 10px 0px;
     text-align: right;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 150px;
+}
+
+.keyTextGroup{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.valueTextGroup{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
 }
