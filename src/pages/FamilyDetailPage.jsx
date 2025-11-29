@@ -19,6 +19,7 @@ export default function FamilyDetailPage() {
   const [error, setError] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -52,6 +53,11 @@ export default function FamilyDetailPage() {
       try {
         const response = await axios.get('/api/users/status');
         setIsLoggedIn(response.data === true);
+        
+        if (response.data) {
+          const userResponse = await axios.get('/api/users/current_user');
+          setCurrentUserId(userResponse.data.user_id);
+        }
       } catch (error) {
         console.error('로그인 상태 확인 오류:', error);
         setIsLoggedIn(false);
@@ -119,7 +125,7 @@ export default function FamilyDetailPage() {
             <p className={styles.subtitle}>가족이 등록한 상세 정보를 확인할 수 있습니다.</p>
           </div>
           <div className={styles.headerButtons}>
-            {isLoggedIn && (
+            {isLoggedIn && detail && detail.user_id !== currentUserId && (
               <button type="button" className="btn-mint" onClick={() => setIsEmailModalOpen(true)}>
                 메일 보내기
               </button>

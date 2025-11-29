@@ -12,6 +12,7 @@ import FamilyEnrolPage from './pages/FamilyEnrolPage';
 import MissingDetailPage from './pages/MissingDetailPage';
 import FamilyDetailPage from './pages/FamilyDetailPage';
 import AdminPage from './pages/AdminPage';
+import MyPage from './pages/MyPage';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/missing-enrol" element={<MissingEnrolPage />} />
         <Route path="/family-enrol" element={<FamilyEnrolPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </BrowserRouter>
   )

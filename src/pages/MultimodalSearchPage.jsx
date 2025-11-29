@@ -329,21 +329,34 @@ export default function MultimodalSearchPage() {
                         ) : error ? (
                             <p style={{ color: 'red' }}>{error}</p>
                         ) : similarityLists.length > 0 ? (
-                            similarityLists.map((item, index) => (
-                                <FaceSimilarityCard 
-                                    key={item.post.mp_id || item.post.fp_id || index}
-                                    rank={index + 1}
-                                    similarity={item.score}
-                                    originalImage={getImageUrl(item.post.face_img_origin)}
-                                    genImage={getImageUrl(item.post.face_img_aging)}
-                                    name={item.post.missing_name}
-                                    gender={item.post.gender_id === 1 ? '남' : '여'}
-                                    birth={item.post.missing_birth}
-                                    place={item.post.missing_place}
-                                    date={item.post.missing_date}
-                                    showGenImage={activeType === '가족' ? true : false}
-                                />
-                            ))
+                            similarityLists.map((item, index) => {
+                                const uniqueId = item.post.mp_id || item.post.fp_id || index;
+                                return (
+                                    <FaceSimilarityCard 
+                                        key={uniqueId}
+                                        rank={index + 1}
+                                        similarity={item.score}
+                                        originalImage={getImageUrl(item.post.face_img_origin)}
+                                        genImage={getImageUrl(item.post.face_img_aging)}
+                                        name={item.post.missing_name}
+                                        gender={item.post.gender_id === 1 ? '남' : '여'}
+                                        birth={item.post.missing_birth}
+                                        place={item.post.missing_place}
+                                        date={item.post.missing_date}
+                                        showGenImage={activeType === '가족' ? true : false}
+                                        postId={uniqueId}
+                                        userId={item.post.user_id}
+                                        onDelete={(deletedId) => {
+                                            setSimilarityLists(prev => 
+                                                prev.filter(item => {
+                                                    const id = item.post.mp_id || item.post.fp_id;
+                                                    return id !== deletedId;
+                                                })
+                                            );
+                                        }}
+                                    />
+                                );
+                            })
                         ) : (
                             <p>유사도 순위 정보가 없습니다.</p>
                         )}
