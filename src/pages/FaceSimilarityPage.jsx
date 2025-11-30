@@ -51,6 +51,11 @@ export default function FaceSimilarityPage() {
     // selectedUser가 변경될 때마다 유사도 API 호출
     useEffect(() => {
         if (selectedUser) {
+            // 즉시 이전 데이터 초기화 (로딩 중 이전 데이터가 보이지 않도록)
+            setSimilarityLists([]);
+            
+            let isCancelled = false; // cleanup 플래그
+            
             const fetchSimilarityData = async () => {
                 try {
                     const id = selectedUser.mp_id || selectedUser.fp_id;
@@ -60,25 +65,38 @@ export default function FaceSimilarityPage() {
                         },
                         withCredentials: true
                     });
-                    if (response.data && response.data.similarPosts) {
+                    
+                    // cleanup이 호출되지 않았을 때만 상태 업데이트
+                    if (!isCancelled) {
                         setSimilarityLists(response.data.similarPosts); // 응답 데이터로 상태 업데이트
                         console.log(response.data.similarPosts);
-                    } else {
-                        setSimilarityLists([]);
+
                     }
                 } catch (error) {
-                    console.error('유사도 API 호출 중 오류 발생:', error);
-                    setSimilarityLists([]); // 오류 발생 시 목록 초기화
+                    // cleanup이 호출되지 않았을 때만 상태 업데이트
+                    if (!isCancelled) {
+                        console.error('유사도 API 호출 중 오류 발생:', error);
+                        setSimilarityLists([]); // 오류 발생 시 목록 초기화
+                    }
                 }
             };
 
             fetchSimilarityData();
+            
+            // cleanup 함수: 컴포넌트 언마운트 또는 의존성 변경 시 이전 요청 무시
+            return () => {
+                isCancelled = true;
+            };
+        } else {
+            // selectedUser가 null이면 초기화
+            setSimilarityLists([]);
         }
     }, [selectedUser, activeType]);
 
     // 버튼 클릭 핸들러
     const handleTypeClick = (type) => {
         setActiveType(type);
+
         setSimilarityLists([]); // 타입 변경 시 유사도 리스트 초기화
         if (type === '실종자' && data.missing_posts && data.missing_posts.length > 0) {
             setSelectedUser(data.missing_posts[0]);
@@ -99,6 +117,7 @@ export default function FaceSimilarityPage() {
         } else {
             user = data.family_posts.find(item => item.fp_id === selectedId);
         }
+        setSimilarityLists([]); // 사용자 변경 시 즉시 결과 초기화
         setSelectedUser(user);
     };
 
@@ -171,22 +190,36 @@ export default function FaceSimilarityPage() {
                     </div>
                     <div className={styles.faceSimilarityCardList}>
                         {similarityLists.length > 0 ? (
-                            similarityLists.map((item, index) => (
-                                <FaceSimilarityCard 
-                                    key={item.post.mp_id || item.post.fp_id || index}
-                                    rank={index + 1}
-                                    similarity={item.score}
-                                    originalImage={getImageUrl(item.post.face_img_origin)}
-                                    genImage={getImageUrl(item.post.face_img_aging)}
-                                    name={item.post.missing_name}
-                                    gender={item.post.gender_id === 1 ? '남' : '여'}
-                                    birth={item.post.missing_birth}
-                                    place={item.post.missing_place}
-                                    date={item.post.missing_date}
-                                    showGenImage={activeType === '가족' ? true : false}
-                                />
-                            ))
-                        ) : selectedUser ? (
+                            similarityLists.map((item, index) => {
+                                const uniqueId = item.post.mp_id || item.post.fp_id || `item-${index}`;
+                                return (
+                                    <FaceSimilarityCard 
+                                        key={uniqueId}
+                                        rank={index + 1}
+                                        similarity={item.score}
+                                        originalImage={getImageUrl(item.post.face_img_origin)}
+                                        genImage={getImageUrl(item.post.face_img_aging)}
+                                        name={item.post.missing_name}
+                                        gender={item.post.gender_id === 1 ? '남' : '여'}
+                                        birth={item.post.missing_birth}
+                                        place={item.post.missing_place}
+                                        date={item.post.missing_date}
+                                        showGenImage={activeType === '가족' ? true : false}
+                                        postId={uniqueId}
+                                        userId={item.post.user_id}
+                                        onDelete={(deletedId) => {
+                                            setSimilarityLists(prev => 
+                                                prev.filter(item => {
+                                                    const id = item.post.mp_id || item.post.fp_id;
+                                                    return id !== deletedId;
+                                                })
+                                            );
+                                        }}
+                                    />
+                                );
+                            })
+                        ) : (
+
                             <p>유사도 순위 정보가 없습니다.</p>
                         ) : (
                             <p>사용자를 선택해주세요.</p>

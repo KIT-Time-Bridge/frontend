@@ -60,3 +60,19 @@
     margin: 0px 0px 10px 0px;
     text-align: right;
 }
+
+.cardActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.cardActions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}

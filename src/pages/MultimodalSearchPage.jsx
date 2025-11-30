@@ -331,10 +331,12 @@ export default function MultimodalSearchPage() {
                         ) : error ? (
                             <p style={{ color: 'red' }}>{error}</p>
                         ) : similarityLists.length > 0 ? (
-                            <>
-                                {similarityLists.map((item, index) => (
+                            similarityLists.map((item, index) => {
+                                const uniqueId = item.post.mp_id || item.post.fp_id || index;
+                                return (
                                     <FaceSimilarityCard 
-                                        key={item.post.mp_id || item.post.fp_id || index}
+                                        key={uniqueId}
+
                                         rank={index + 1}
                                         similarity={item.score}
                                         originalImage={getImageUrl(item.post.face_img_origin)}
@@ -345,9 +347,20 @@ export default function MultimodalSearchPage() {
                                         place={item.post.missing_place}
                                         date={item.post.missing_date}
                                         showGenImage={activeType === '가족' ? true : false}
+                                        postId={uniqueId}
+                                        userId={item.post.user_id}
+                                        onDelete={(deletedId) => {
+                                            setSimilarityLists(prev => 
+                                                prev.filter(item => {
+                                                    const id = item.post.mp_id || item.post.fp_id;
+                                                    return id !== deletedId;
+                                                })
+                                            );
+                                        }}
                                     />
-                                ))}
-                            </>
+                                );
+                            })
+
                         ) : (
                             <p>검색 버튼을 눌러 유사도를 조회해주세요.</p>
                         )}

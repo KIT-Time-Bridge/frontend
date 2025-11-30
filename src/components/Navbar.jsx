@@ -104,6 +104,7 @@ export default function Navbar() {
       <div className={styles.navBtnGroup}>
         {isLoggedIn ? (
           <>
+            <Link className='btn-white' to="/mypage">마이페이지</Link>
             {isAdmin && (
               <Link className='btn-mint' to="/admin">관리자 페이지</Link>
             )}
