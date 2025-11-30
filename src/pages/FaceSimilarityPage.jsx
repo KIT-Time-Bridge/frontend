@@ -221,10 +221,7 @@ export default function FaceSimilarityPage() {
                                 );
                             })
                         ) : (
-
                             <p>유사도 순위 정보가 없습니다.</p>
-                        ) : (
-                            <p>사용자를 선택해주세요.</p>
                         )}
                     </div>
                 </div>
