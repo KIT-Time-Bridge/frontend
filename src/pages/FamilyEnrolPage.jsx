@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from "../components/Navbar";
 import RegionSelector from "../components/RegionSelector";
 import styles from './FamilyEnrolPage.module.css';
 import Footer from "../components/Footer";
 
+const IMAGE_HOST = 'http://202.31.202.8/images/';
 
-export default function MissingEnrolPage() {
+export default function FamilyEnrolPage() {
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+  const isEditMode = !!editId;
+  
   const [imageSrc, setImageSrc] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [resultImageSrc, setResultImageSrc] = useState("");
@@ -15,7 +20,49 @@ export default function MissingEnrolPage() {
   const [missingExtraEvidence, setMissingExtraEvidence] = useState("");
   const [missingPlace, setMissingPlace] = useState("");
   const [photoAge, setPhotoAge] = useState("");
+  const [loading, setLoading] = useState(isEditMode);
   const navigate = useNavigate();
+
+  // 수정 모드일 때 기존 데이터 불러오기
+  useEffect(() => {
+    if (isEditMode && editId) {
+      const fetchPostData = async () => {
+        try {
+          setLoading(true);
+          const response = await axios.post('/api/posts/detail_missing_search', null, {
+            params: { missing_id: editId }
+          });
+          const data = response.data;
+          
+          // 폼 필드에 데이터 채우기
+          if (document.getElementById('name')) document.getElementById('name').value = data.missing_name || '';
+          if (document.getElementById('gender')) document.getElementById('gender').value = data.gender_id === 1 ? '남' : '여';
+          if (document.getElementById('birth')) document.getElementById('birth').value = data.missing_birth || '';
+          if (document.getElementById('missingDate')) document.getElementById('missingDate').value = data.missing_date || '';
+          if (document.getElementById('photoAge')) document.getElementById('photoAge').value = data.photo_age || '';
+          
+          setMissingSituation(data.missing_situation || '');
+          setMissingExtraEvidence(data.missing_extra_evidence || '');
+          setMissingPlace(data.missing_place || '');
+          setPhotoAge(data.photo_age ? String(data.photo_age) : '');
+          
+          // 이미지 미리보기
+          if (data.face_img_origin) {
+            setImageSrc(`${IMAGE_HOST}${data.face_img_origin}`);
+          }
+          if (data.face_img_aging) {
+            setResultImageSrc(`${IMAGE_HOST}${data.face_img_aging}`);
+          }
+        } catch (error) {
+          console.error('게시글 데이터 불러오기 실패:', error);
+          alert('게시글 정보를 불러오지 못했습니다.');
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchPostData();
+    }
+  }, [isEditMode, editId]);
 
   const handleImageChange = (event) => {
       const file = event.target.files[0];
@@ -73,52 +120,98 @@ export default function MissingEnrolPage() {
       const missing_place = missingPlace;
 
       // 필수 필드 유효성 검사
-      if (!name || !birth || !missingDate || !imageFile || !resultImageSrc || !photoAge) {
-          alert('모든 필수 정보를 입력하고, 이미지 생성을 먼저 진행해 주세요.');
+      if (!name || !birth || !missingDate || !photoAge) {
+          alert('모든 필수 정보를 입력해 주세요.');
           return;
       }
 
-      const formData = new FormData();
-      formData.append('type', 1);
-      formData.append('name', name);
-      formData.append('img_origin', imageFile); // 원본 이미지
-      
-      // 생성된 이미지가 있을 경우에만 추가
-      if (resultImageSrc) {
-          // URL을 fetch하여 Blob으로 변환 후 FormData에 추가
-          const agingImageBlob = await fetch(resultImageSrc).then(res => res.blob());
-          formData.append('img_aging', agingImageBlob, 'aged_image.png');
-      }
-      
-      formData.append('gender', gender);
-      formData.append('birth', birth);
-      formData.append('missingDate', missingDate);
-      formData.append('missing_situation', missingSituation);
-      formData.append('missing_extra_evidence', missingExtraEvidence);
-      formData.append('missing_place', missing_place);
-      formData.append('photo_age', parseInt(photoAge) || 0); // 사진 당시 나이
+      // 수정 모드와 등록 모드 분기
+      if (isEditMode) {
+          // 수정 모드
+          const formData = new FormData();
+          formData.append('missing_id', editId);
+          formData.append('type', 1);
+          formData.append('missing_name', name);
+          if (imageFile) {
+              formData.append('img_origin', imageFile);
+          }
+          if (resultImageSrc && resultImageSrc.startsWith('blob:')) {
+              // 새로 생성된 이미지인 경우
+              const agingImageBlob = await fetch(resultImageSrc).then(res => res.blob());
+              formData.append('img_aging', agingImageBlob, 'aged_image.png');
+          }
+          formData.append('gender', gender);
+          formData.append('missing_birth', birth);
+          formData.append('missing_date', missingDate);
+          formData.append('missing_situation', missingSituation);
+          formData.append('missing_extra_evidence', missingExtraEvidence);
+          formData.append('missing_place', missing_place);
+          formData.append('photo_age', parseInt(photoAge) || 0);
 
-      try {
-          const response = await axios.post('/api/posts/upload', formData, {
-              headers: {
-                  'Content-Type': 'multipart/form-data',
-              },
-          });
-          console.log('등록 성공:', response.data);
-          alert('실종자 정보가 성공적으로 등록되었습니다!');
-      } catch (error) {
-          console.error('등록 실패:', error.response ? error.response.data : error.message);
-          alert('등록 실패!');
+          try {
+              const response = await axios.post('/api/posts/update_post', formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data',
+                  },
+              });
+              console.log('수정 성공:', response.data);
+              alert('실종자 정보가 성공적으로 수정되었습니다!');
+              navigate('/mypage');
+          } catch (error) {
+              console.error('수정 실패:', error.response ? error.response.data : error.message);
+              alert('수정 실패!');
+          }
+      } else {
+          // 등록 모드
+          if (!imageFile || !resultImageSrc) {
+              alert('모든 필수 정보를 입력하고, 이미지 생성을 먼저 진행해 주세요.');
+              return;
+          }
+
+          const formData = new FormData();
+          formData.append('type', 1);
+          formData.append('name', name);
+          formData.append('img_origin', imageFile); // 원본 이미지
+          
+          // 생성된 이미지가 있을 경우에만 추가
+          if (resultImageSrc) {
+              // URL을 fetch하여 Blob으로 변환 후 FormData에 추가
+              const agingImageBlob = await fetch(resultImageSrc).then(res => res.blob());
+              formData.append('img_aging', agingImageBlob, 'aged_image.png');
+          }
+          
+          formData.append('gender', gender);
+          formData.append('birth', birth);
+          formData.append('missingDate', missingDate);
+          formData.append('missing_situation', missingSituation);
+          formData.append('missing_extra_evidence', missingExtraEvidence);
+          formData.append('missing_place', missing_place);
+          formData.append('photo_age', parseInt(photoAge) || 0); // 사진 당시 나이
+
+          try {
+              const response = await axios.post('/api/posts/upload', formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data',
+                  },
+              });
+              console.log('등록 성공:', response.data);
+              alert('실종자 정보가 성공적으로 등록되었습니다!');
+          } catch (error) {
+              console.error('등록 실패:', error.response ? error.response.data : error.message);
+              alert('등록 실패!');
+          }
+          navigate('/family');
       }
-      navigate('/family');
   };
   return (
     <div>
       <Navbar/>
       <form onSubmit={handleFormSubmit} className={styles.container}>
           <div className={styles.descriptionGroup}>
-              <h1 className={styles.title}>실종자 등록 (가족)</h1>
-              <p className={styles.description}>가족이 실종자를 등록하는 페이지 입니다.</p>
+              <h1 className={styles.title}>{isEditMode ? '실종자 정보 수정' : '실종자 등록 (가족)'}</h1>
+              <p className={styles.description}>
+                  {isEditMode ? '실종자 정보를 수정할 수 있습니다.' : '가족이 실종자를 등록하는 페이지 입니다.'}
+              </p>
           </div>
           <div className={styles.missingEnrolContainer}>
               <div className={styles.imageContainer}>
@@ -233,7 +326,11 @@ export default function MissingEnrolPage() {
               />
           </div>
           <div className={styles.enrolBtn}>
-              <button type="submit" className="btn-mint">등록</button>
+              {loading ? (
+                  <p>게시글 정보를 불러오는 중...</p>
+              ) : (
+                  <button type="submit" className="btn-mint">{isEditMode ? '수정' : '등록'}</button>
+              )}
           </div>
       </form>
       <Footer/>
