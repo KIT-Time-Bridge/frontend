@@ -1,18 +1,20 @@
 .container{
-    width: 1280px;
+    width: 100%;
+    max-width: 1280px;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
 .cardListContainer {
     display: grid;
-    width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
     margin-top: 20px;
-    grid-template-columns: repeat(4, 1fr); /* 4개의 열을 동일한 너비로 만듭니다. */
-    gap: 10px; /* 카드 사이의 간격을 설정합니다. */
-    justify-content: center; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .missingDescriptionGroup{

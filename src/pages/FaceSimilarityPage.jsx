@@ -25,15 +25,20 @@ export default function FaceSimilarityPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.post('api/posts/register_missing_search');
+                const response = await axios.post('api/posts/register_missing_search', {}, {
+                    withCredentials: true
+                });
                 const apiData = response.data;
                 setData(apiData);
                 
                 console.log(apiData)
 
                 // 초기 선택된 사용자 설정
-                if (apiData.missing_posts.length > 0) {
+                if (apiData.missing_posts && apiData.missing_posts.length > 0) {
                     setSelectedUser(apiData.missing_posts[0]);
+                } else if (apiData.family_posts && apiData.family_posts.length > 0) {
+                    setSelectedUser(apiData.family_posts[0]);
+                    setActiveType('가족');
                 }
             } catch (error) {
                 console.error('초기 API 호출 중 오류 발생:', error);
@@ -58,12 +63,14 @@ export default function FaceSimilarityPage() {
                         params: {
                             missingId: id,
                         },
+                        withCredentials: true
                     });
                     
                     // cleanup이 호출되지 않았을 때만 상태 업데이트
                     if (!isCancelled) {
                         setSimilarityLists(response.data.similarPosts); // 응답 데이터로 상태 업데이트
                         console.log(response.data.similarPosts);
+
                     }
                 } catch (error) {
                     // cleanup이 호출되지 않았을 때만 상태 업데이트
@@ -89,8 +96,16 @@ export default function FaceSimilarityPage() {
     // 버튼 클릭 핸들러
     const handleTypeClick = (type) => {
         setActiveType(type);
-        setSimilarityLists([]); // 타입 변경 시 결과 초기화
-        setSelectedUser(type === '실종자' ? data.missing_posts[0] : data.family_posts[0]);
+
+        setSimilarityLists([]); // 타입 변경 시 유사도 리스트 초기화
+        if (type === '실종자' && data.missing_posts && data.missing_posts.length > 0) {
+            setSelectedUser(data.missing_posts[0]);
+        } else if (type === '가족' && data.family_posts && data.family_posts.length > 0) {
+            setSelectedUser(data.family_posts[0]);
+        } else {
+            setSelectedUser(null);
+            setSimilarityLists([]); // 사용자가 없으면 리스트 초기화
+        }
     };
 
     // 사용자 선택 핸들러
@@ -134,12 +149,17 @@ export default function FaceSimilarityPage() {
                         className={styles.select}
                         onChange={handleUserSelect}
                         value={selectedUser ? (selectedUser.mp_id || selectedUser.fp_id) : ''}
+                        disabled={!userList || userList.length === 0}
                     >
-                        {userList.map((item) => (
-                            <option key={item.mp_id || item.fp_id} value={item.mp_id || item.fp_id}>
-                                {item.missing_name} ({item.gender_id === 1 ? '남' : '여'})
-                            </option>
-                        ))}
+                        {userList && userList.length > 0 ? (
+                            userList.map((item) => (
+                                <option key={item.mp_id || item.fp_id} value={item.mp_id || item.fp_id}>
+                                    {item.missing_name} ({item.gender_id === 1 ? '남' : '여'})
+                                </option>
+                            ))
+                        ) : (
+                            <option value="">등록된 게시글이 없습니다</option>
+                        )}
                     </select>
                 </div>
                 <div className={styles.faceSimilarityCardsContainer}>
@@ -199,9 +219,11 @@ export default function FaceSimilarityPage() {
                                 );
                             })
                         ) : (
+
                             <p>유사도 순위 정보가 없습니다.</p>
+                        ) : (
+                            <p>사용자를 선택해주세요.</p>
                         )}
-                        {/* <Pagination startPage={1} endPage={5} /> */}
                     </div>
                 </div>
             </div>

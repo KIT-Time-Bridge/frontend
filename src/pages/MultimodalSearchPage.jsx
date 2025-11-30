@@ -136,6 +136,8 @@ export default function MultimodalSearchPage() {
                 type: type,
                 attributes: faceAttributes, // 영문 값으로 전송
                 gender: gender
+            }, {
+                withCredentials: true
             });
             
             if (response.data && response.data.similarPosts) {
@@ -334,6 +336,7 @@ export default function MultimodalSearchPage() {
                                 return (
                                     <FaceSimilarityCard 
                                         key={uniqueId}
+
                                         rank={index + 1}
                                         similarity={item.score}
                                         originalImage={getImageUrl(item.post.face_img_origin)}
@@ -357,10 +360,10 @@ export default function MultimodalSearchPage() {
                                     />
                                 );
                             })
+
                         ) : (
-                            <p>유사도 순위 정보가 없습니다.</p>
+                            <p>검색 버튼을 눌러 유사도를 조회해주세요.</p>
                         )}
-                        {similarityLists.length > 0 && <Pagination startPage={1} endPage={5}></Pagination>}
                     </div>
                 </div>
             </div>

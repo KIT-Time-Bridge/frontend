@@ -131,6 +131,12 @@
   margin-right: 0.5rem;
 }
 
+.buttonGroup {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
 .approveButton {
   padding: 0.75rem 1.5rem;
   background-color: #4CAF50;
@@ -140,11 +146,27 @@
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: auto;
+  flex: 1;
 }
 
 .approveButton:hover {
   background-color: #45a049;
+}
+
+.rejectButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex: 1;
+}
+
+.rejectButton:hover {
+  background-color: #da190b;
 }
 
 .emptyMessage {
