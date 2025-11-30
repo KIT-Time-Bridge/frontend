@@ -32,7 +32,7 @@
     display: flex;
     justify-content: center;
     align-items: center; 
-    width: 142px;
+    width: 180px;
     height: 40px;
     border-radius: 10px;
     border: 1px solid #83c5be;
@@ -46,6 +46,8 @@
     border: none;
     cursor: pointer;
     background-color: #fff;
+    white-space: nowrap;
+    padding: 0 8px;
 }
 
 .typeActivatedBtn{
@@ -58,6 +60,8 @@
     border-radius: 8px;
     cursor: pointer;
     background-color: #83c5be;
+    white-space: nowrap;
+    padding: 0 8px;
 }
 
 .icon {
