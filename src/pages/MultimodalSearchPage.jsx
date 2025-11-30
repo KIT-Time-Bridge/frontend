@@ -14,7 +14,7 @@ import styles from './MultimodalSearchPage.module.css';
 
 export default function MultimodalSearchPage() {
     const [activeType, setActiveType] = useState('실종자');
-    const [gender, setGender] = useState(null); // null = 전체, 1 = 남자, 2 = 여자
+    const [gender, setGender] = useState(1); // 1 = 남자, 2 = 여자
     const [similarityLists, setSimilarityLists] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -115,7 +115,7 @@ export default function MultimodalSearchPage() {
 
     // 성별 선택 핸들러
     const handleGenderChange = (e) => {
-        const value = e.target.value === '' ? null : parseInt(e.target.value);
+        const value = parseInt(e.target.value);
         setGender(value);
         setSimilarityLists([]); // 성별 변경 시 결과 초기화
     };
@@ -141,12 +141,8 @@ export default function MultimodalSearchPage() {
             const requestBody = {
                 type: type,
                 attributes: faceAttributes, // 영문 값으로 전송
+                gender: gender
             };
-            
-            // gender가 선택된 경우에만 추가
-            if (gender !== null) {
-                requestBody.gender = gender;
-            }
             
             const response = await axios.post(`/api/posts/multimodal_similarity`, requestBody, {
                 withCredentials: true
@@ -191,11 +187,10 @@ export default function MultimodalSearchPage() {
                         <select 
                             name="gender" 
                             className={styles.select} 
-                            value={gender === null ? '' : gender} 
+                            value={gender} 
                             onChange={handleGenderChange}
                             style={{ marginRight: '10px' }}
                         >
-                            <option value="">전체</option>
                             <option value="1">남자</option>
                             <option value="2">여자</option>
                         </select>
