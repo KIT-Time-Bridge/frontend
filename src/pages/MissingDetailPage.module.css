@@ -1,7 +1,9 @@
 .wrapper{
-    width: 1280px;
+    width: 100%;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 60px 0 80px;
+    padding: 60px 20px 80px;
+    box-sizing: border-box;
 }
 
 .headerRow{
@@ -61,10 +63,12 @@
 
 .profileImage{
     width: 100%;
+    max-width: 100%;
     border-radius: 12px;
     object-fit: cover;
     aspect-ratio: 3 / 4;
     background-color: #f1f1f1;
+    box-sizing: border-box;
 }
 
 .imageCaption{
@@ -125,11 +129,24 @@
 
 @media (max-width: 1024px){
     .wrapper{
-        width: 100%;
-        padding: 40px 24px 60px;
+        padding: 40px 20px 60px;
     }
 
     .profileSection{
+        grid-template-columns: 1fr;
+    }
+    
+    .headerRow{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .headerButtons{
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .infoGrid{
         grid-template-columns: 1fr;
     }
 }

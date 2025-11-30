@@ -75,6 +75,25 @@ export default function AdminPage() {
     }
   };
 
+  const handleReject = async (postId) => {
+    if (!window.confirm('이 게시글을 거절하시겠습니까? 거절된 게시글은 삭제됩니다.')) {
+      return;
+    }
+
+    try {
+      await axios.post('/api/posts/reject', null, {
+        params: { post_id: postId },
+        withCredentials: true
+      });
+      alert('게시글이 거절되었습니다.');
+      // 목록 새로고침
+      await loadPendingPosts();
+    } catch (error) {
+      console.error('게시글 거절 실패:', error);
+      alert('게시글 거절에 실패했습니다.');
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await axios.post('/api/users/logout', {}, {
@@ -91,7 +110,7 @@ export default function AdminPage() {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '/no-image.jpg';
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:8001/${imagePath}`;
+    return `http://202.31.202.8/images/${imagePath}`;
   };
 
   if (loading) {
@@ -150,12 +169,20 @@ export default function AdminPage() {
                       <p><strong>실종상황:</strong> {post.missing_situation || '-'}</p>
                       <p><strong>추가단서:</strong> {post.missing_extra_evidence || '-'}</p>
                     </div>
-                    <button
-                      className={styles.approveButton}
-                      onClick={() => handleApprove(post.mp_id)}
-                    >
-                      승인
-                    </button>
+                    <div className={styles.buttonGroup}>
+                      <button
+                        className={styles.approveButton}
+                        onClick={() => handleApprove(post.mp_id)}
+                      >
+                        승인
+                      </button>
+                      <button
+                        className={styles.rejectButton}
+                        onClick={() => handleReject(post.mp_id)}
+                      >
+                        거절
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))
@@ -192,12 +219,20 @@ export default function AdminPage() {
                       <p><strong>실종상황:</strong> {post.missing_situation || '-'}</p>
                       <p><strong>추가단서:</strong> {post.missing_extra_evidence || '-'}</p>
                     </div>
-                    <button
-                      className={styles.approveButton}
-                      onClick={() => handleApprove(post.fp_id)}
-                    >
-                      승인
-                    </button>
+                    <div className={styles.buttonGroup}>
+                      <button
+                        className={styles.approveButton}
+                        onClick={() => handleApprove(post.fp_id)}
+                      >
+                        승인
+                      </button>
+                      <button
+                        className={styles.rejectButton}
+                        onClick={() => handleReject(post.fp_id)}
+                      >
+                        거절
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))

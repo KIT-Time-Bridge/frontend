@@ -1,7 +1,10 @@
 .container{
-    width: 1046px;
+    width: 100%;
+    max-width: 1280px;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
 .descriptionGroup{
@@ -27,6 +30,8 @@
     gap: 10px;
     padding: 10px;
     margin-bottom: 10px;
+    box-sizing: border-box;
+    flex-wrap: wrap;
 }
 
 .imageContainer{
@@ -43,22 +48,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
 }
 
 .outputImageContainer{
-    width: 512px;
+    width: 100%;
+    max-width: 512px;
+    min-width: 280px;
     height: 512px;
     border: 1px solid #ccc;
     border-radius: 10px;
     object-fit: cover;
     text-align: center;
-    /* 텍스트 정렬을 위한 flexbox 추가 */
     display: flex;
     font-size: 32px;
     color: #333;
     justify-content: center;
     align-items: center;
     background-color: #e4e4e4;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .btnGroup{
@@ -86,25 +98,34 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .infoKey{
     width: 95px;
+    min-width: 95px;
     color: #333;
     font-size: 24px;
     margin: 0px;
     line-height: 44px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .formInput {
     flex-grow: 1;
+    min-width: 0;
     padding: 12px;
     font-size: 16px;
     font-family: 'Paperlogy';
-    border: 1px solid #ccc; /* 기본 테두리 색상 */
+    border: 1px solid #ccc;
     border-radius: 10px;
-    outline: none; /* 클릭 시 나타나는 외곽선 제거 */
-    transition: border-color 0.3s ease; /* 색상 변화에 부드러운 전환 효과 추가 */
+    outline: none;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 /* 입력창 포커스 시 스타일 */
@@ -114,11 +135,14 @@
 
 .select{
     flex-grow: 1;
+    min-width: 0;
     height: 44px;
-    border: 1px solid #ccc; /* 기본 테두리 색상 */
+    border: 1px solid #ccc;
     border-radius: 10px;
-    outline: none; /* 클릭 시 나타나는 외곽선 제거 */
+    outline: none;
     transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    padding: 0 10px;
 }
 
 .select:focus{
@@ -133,21 +157,27 @@
 .previewImage {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* 이미지를 컨테이너에 맞게 채움 */
+  object-fit: cover; /* 이미지를 컨테이너에 맞게 채움 */
   border-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .textArea {
     flex-grow: 1;
+    min-width: 0;
     height: 200px;
     padding: 12px;
     font-size: 16px;
     font-family: 'Paperlogy';
-    border: 1px solid #ccc; /* 기본 테두리 색상 */
+    border: 1px solid #ccc;
     border-radius: 10px;
-    outline: none; /* 클릭 시 나타나는 외곽선 제거 */
-    transition: border-color 0.3s ease; /* 색상 변화에 부드러운 전환 효과 추가 */
-    resize: none;
+    outline: none;
+    transition: border-color 0.3s ease;
+    resize: vertical;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .textArea:focus {
