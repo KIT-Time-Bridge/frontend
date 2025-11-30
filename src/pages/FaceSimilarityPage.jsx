@@ -189,7 +189,9 @@ export default function FaceSimilarityPage() {
                         )}
                     </div>
                     <div className={styles.faceSimilarityCardList}>
-                        {similarityLists.length > 0 ? (
+                        {!selectedUser ? (
+                            <p>사용자를 선택해주세요.</p>
+                        ) : similarityLists.length > 0 ? (
                             similarityLists.map((item, index) => {
                                 const uniqueId = item.post.mp_id || item.post.fp_id || `item-${index}`;
                                 return (

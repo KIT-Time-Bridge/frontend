@@ -63,7 +63,7 @@ export default function AdminPage() {
 
     try {
       await axios.post('/api/posts/approve', null, {
-        params: { post_id: postId },
+        params: { missing_id: postId },
         withCredentials: true
       });
       alert('게시글이 승인되었습니다.');

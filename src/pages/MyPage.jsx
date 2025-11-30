@@ -149,6 +149,12 @@ export default function MyPage() {
                             상세보기
                           </button>
                           <button
+                            className="btn-mint"
+                            onClick={() => navigate(isMissing ? `/missing-enrol?edit=${postId}` : `/family-enrol?edit=${postId}`)}
+                          >
+                            수정
+                          </button>
+                          <button
                             className="btn-white"
                             onClick={() => handleDelete(postId, activeType)}
                           >
