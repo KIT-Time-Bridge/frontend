@@ -14,6 +14,7 @@ import styles from './MultimodalSearchPage.module.css';
 
 export default function MultimodalSearchPage() {
     const [activeType, setActiveType] = useState('실종자');
+    const [gender, setGender] = useState(null); // null = 전체, 1 = 남자, 2 = 여자
     const [similarityLists, setSimilarityLists] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -112,6 +113,13 @@ export default function MultimodalSearchPage() {
         setSimilarityLists([]); // 타입 변경 시 결과 초기화
     };
 
+    // 성별 선택 핸들러
+    const handleGenderChange = (e) => {
+        const value = e.target.value === '' ? null : parseInt(e.target.value);
+        setGender(value);
+        setSimilarityLists([]); // 성별 변경 시 결과 초기화
+    };
+
     // 얼굴 특징 선택 핸들러
     const handleAttributeChange = (key, value) => {
         setFaceAttributes(prev => ({
@@ -127,16 +135,20 @@ export default function MultimodalSearchPage() {
         try {
             // 타입: 실종자=2, 가족=1
             const type = activeType === '실종자' ? 2 : 1;
-            // 기본 gender는 1 (male), 필요시 추가 선택 UI 필요
-            const gender = 1;
             
             // faceAttributes는 이미 영문 값으로 저장되어 있음 (서버 전송용)
             // UI에서는 한글 라벨이 표시되지만, 실제 전송은 영문 값으로 이루어짐
-            const response = await axios.post(`/api/posts/multimodal_similarity`, {
+            const requestBody = {
                 type: type,
                 attributes: faceAttributes, // 영문 값으로 전송
-                gender: gender
-            }, {
+            };
+            
+            // gender가 선택된 경우에만 추가
+            if (gender !== null) {
+                requestBody.gender = gender;
+            }
+            
+            const response = await axios.post(`/api/posts/multimodal_similarity`, requestBody, {
                 withCredentials: true
             });
             
@@ -174,6 +186,19 @@ export default function MultimodalSearchPage() {
                     <div className={styles.typeContainer}>
                         <button onClick={() => handleTypeClick('실종자')} className={activeType === '실종자' ? styles.typeActivatedBtn : styles.typeBtn}><RiUserSearchFill className={styles.icon}/>실종자</button>
                         <button onClick={() => handleTypeClick('가족')} className={activeType === '가족' ? styles.typeActivatedBtn : styles.typeBtn}><MdFamilyRestroom className={styles.icon}/>가족</button>
+                    </div>
+                    <div className={styles.genderContainer} style={{ marginLeft: '10px' }}>
+                        <select 
+                            name="gender" 
+                            className={styles.select} 
+                            value={gender === null ? '' : gender} 
+                            onChange={handleGenderChange}
+                            style={{ marginRight: '10px' }}
+                        >
+                            <option value="">전체</option>
+                            <option value="1">남자</option>
+                            <option value="2">여자</option>
+                        </select>
                     </div>
                     <button onClick={handleSearch} className="btn-mint" style={{ marginLeft: '10px' }}>
                         검색

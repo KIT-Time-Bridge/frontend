@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './FaceSimilarityCard.module.css';
 
@@ -18,7 +17,6 @@ export default function FaceSimilarityCard({
   userId,
   onDelete
 }) {
-  const navigate = useNavigate();
   const [currentUserId, setCurrentUserId] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -62,7 +60,6 @@ export default function FaceSimilarityCard({
 
   const formattedSimilarity = typeof similarity === 'number' ? (similarity*100).toFixed(2) : similarity;
   const isMyPost = currentUserId && userId && currentUserId === userId;
-  const postType = postId && postId[0] === 'm' ? 'missing' : 'family';
 
   return (
     <div>
@@ -91,12 +88,6 @@ export default function FaceSimilarityCard({
               {!showGenImage && genImage && <img src={genImage} className={styles.cardImage} />}
           </div>
           <div className={styles.cardActions}>
-            <button 
-              className="btn-mint" 
-              onClick={() => navigate(`/${postType}/${postId}`)}
-            >
-              상세보기
-            </button>
             {isLoggedIn && isMyPost && (
               <button 
                 className="btn-white" 
